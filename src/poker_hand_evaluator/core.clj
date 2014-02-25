@@ -1,16 +1,5 @@
 (ns poker-hand-evaluator.core)
 
-(def deck
-  "the default deck to be used by the evaluator"
-  (generate-deck))
-
-(defn- generate-deck []
-  "creates map {card -> bit pattern}"
-  (let [deck {}]
-    (into {} (for [face (keys face-details) suit (keys suit-details)] [(str face suit) (card-value face suit)]))
-    )
-  )
-
 (def suit-details
   "available suits and the respective bit pattern to be used in the card format"
   {"♠" 0x1000, "♥" 0x2000, "♦" 0x4000, "♣" 0x8000})
@@ -53,3 +42,16 @@
     (bit-or prime (bit-shift-left face-value 8) suit-value (bit-shift-left 1 (+ 16 face-value)))
     )
   )
+
+(defn- generate-deck []
+  "creates map {card -> bit pattern}"
+  (let [deck {}]
+    (into {} (for [face (keys face-details) suit (keys suit-details)] [(str face suit) (card-value face suit)]))
+    )
+  )
+
+(def deck
+  "the default deck to be used by the evaluator"
+  (generate-deck))
+
+

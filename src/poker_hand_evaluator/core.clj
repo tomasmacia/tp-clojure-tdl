@@ -135,7 +135,7 @@
 
 (defn evaluate
   "Evaluates a poker hand, returning a map including its name and rank"
-  [hand]
+  [& hand]
   (let [hand-rank (calculate-hand-rank hand)
         rank-name (resolve-rank-name hand-rank)]
     {:rank hand-rank :hand rank-name})

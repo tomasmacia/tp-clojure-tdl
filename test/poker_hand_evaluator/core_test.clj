@@ -16,3 +16,11 @@
     (is (= "10000001001100000111" (base2-str (deck "5♠")))))
   (testing "J♣ is represented with correct bit pattern"
     (is (= "10000000001000100100011101" (base2-str (deck "J♣"))))))
+
+(deftest evaluation
+  (testing "Flush"
+    (is (= 323 (eval-hand '("A♣" "K♣" "Q♣" "J♣" "9♣")))))
+  (testing "Straight"
+    (is (= 1601 (eval-hand '("9♣" "T♣" "J♦" "Q♥" "K♣")))))
+  (testing "Simple pair"
+    (is (= 6185 (eval-hand '("2♣" "2♦" "3♦" "4♥" "5♣"))))))

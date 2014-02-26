@@ -1,11 +1,12 @@
-(ns poker-hand-evaluator.core)
+(ns poker-hand-evaluator.core
+  (use poker-hand-evaluator.lookup-tables))
 
 (def suit-details
-  "available suits and the respective bit pattern to be used in the card format"
+  "Available suits and the respective bit pattern to be used in the card format"
   {"♠" 0x1000, "♥" 0x2000, "♦" 0x4000, "♣" 0x8000})
 
 (def face-details
-  "available face values, including their assigned prime and their rank to be used in the card format"
+  "Available face values, including their assigned prime and their rank to be used in the card format"
   {"2" {:prime 2, :index 0}
    "3" {:prime 3, :index 1}
    "4" {:prime 5, :index 2}
@@ -21,7 +22,7 @@
    "A" {:prime 41, :index 12}})
 
 (defn- card-value
-  "Card representation as an integer, based on Kevin Sufecool's specs:
+  "Card representation as an integer, based on Kevin Suffecool's specs:
 
     +--------+--------+--------+--------+
     |xxxbbbbb|bbbbbbbb|cdhsrrrr|xxpppppp|
@@ -30,10 +31,7 @@
     p = prime number of rank (deuce=2,trey=3,four=5,five=7,...,ace=41)
     r = rank of card (deuce=0,trey=1,four=2,five=3,...,ace=12)
     cdhs = suit of card
-    b = bit turned on depending on rank of card
-
-   Details in http://www.suffecool.net/poker/evaluator.html
-  "
+    b = bit turned on depending on rank of card"
   [face suit]
   (let [details (face-details face)
         prime (details :prime)
@@ -43,15 +41,70 @@
     )
   )
 
-(defn- generate-deck []
-  "creates map {card -> bit pattern}"
+(defn- generate-deck
+  "creates map: card name -> card value"
+  []
   (let [deck {}]
     (into {} (for [face (keys face-details) suit (keys suit-details)] [(str face suit) (card-value face suit)]))
     )
   )
 
 (def deck
-  "the default deck to be used by the evaluator"
+  "The default deck to be used by the evaluator"
   (generate-deck))
 
+(defn- calculate-hand-index
+  "The hand index is calculated using:
 
+  (c1 OR c2 OR c3 OR c4 OR c5) >> 16
+
+  This value can be used later to find values in lookup tables."
+  [cards]
+  (bit-shift-right (apply bit-or cards) 16)
+  )
+
+(defn- flush-hand
+  "The following expression is used to check if the hand is a flush:
+
+      c1 AND c2 AND c3 AND c4 AND c5 AND 0xF000
+
+   If the expression returns a non-zero value, then we have a flush and can use the lookup table for flushes
+   to resolve the hand rank."
+  [hand-index card-values]
+  (and
+    (not= (bit-and (apply bit-and card-values) 0xF000) 0)
+    (flush-to-rank hand-index)
+    ))
+
+(defn- unique-card-hand
+  "Straights or High Card hands are resolved using a specific lookup table to resolve hand with 5 unique cards.
+  This lookup will return a hand rank only for straights and high cards (0 for any other hand)."
+  [hand-index]
+  (let [hand-rank (unique5-to-rank hand-index)]
+    (and (not= hand-rank 0) hand-rank)
+    )
+  )
+
+(defn- other-hands
+  "Other hands are all non-flush and non-unique5. We first calculate the prime product of all cards:
+
+  q = (c1 AND 0xFF) * (c2 AND 0xFF) * ... * (c5 AND 0xFF)
+
+  Because the range of q is huge (48-100M+), we use 2 lookup tables: we search the index of q on the first
+  and then use this index on the second to find the actual hand rank."
+  [card-values]
+  (let [q (reduce * (map #(bit-and % 0xFF) card-values))
+        q-index (java.util.Collections/binarySearch prime-product-to-combination q)]
+    (or (combination-to-rank q-index) false)
+    ))
+
+(defn eval-hand [hand]
+  (let [card-values (map deck hand)
+        hand-index (calculate-hand-index card-values)]
+    (or
+      (flush-hand hand-index, card-values)
+      (unique-card-hand hand-index)
+      (other-hands card-values)
+      )
+    )
+  )

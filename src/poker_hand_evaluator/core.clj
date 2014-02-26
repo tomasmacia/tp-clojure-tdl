@@ -98,7 +98,13 @@
     (or (combination-to-rank q-index) false)
     ))
 
-(defn eval-hand [hand]
+(defn- calculate-hand-rank
+  "Uses the following strategies to find the hand rank, in order:
+    1. bit masking + lookup table for flush hands
+    2. bit masking + lookup table for hands with 5 unique cards
+    3. prime multiplying + 2 lookup tables for the remaining hands
+   "
+  [hand]
   (let [card-values (map deck hand)
         hand-index (calculate-hand-index card-values)]
     (or
@@ -107,4 +113,30 @@
       (other-hands card-values)
       )
     )
+  )
+
+(def ranks
+  "Poker ranks and their respective maximum rank"
+  {7462 :HighCard
+   6185 :OnePair
+   3325 :TwoPairs
+   2467 :ThreeOfAKind
+   1609 :Straight
+   1599 :Flush
+   322 :FullHouse
+   166 :FourOfAKind
+   10 :StraightFlush})
+
+(defn- resolve-rank-name
+  "Resolves the name of a given rank"
+  [hand-rank]
+  (ranks (+ hand-rank (first (filter #(>= % 0) (sort (map #(- % hand-rank) (keys ranks)))))))
+  )
+
+(defn evaluate
+  "Evaluates a poker hand, returning a map including its name and rank"
+  [hand]
+  (let [hand-rank (calculate-hand-rank hand)
+        rank-name (resolve-rank-name hand-rank)]
+    {:rank hand-rank :hand rank-name})
   )

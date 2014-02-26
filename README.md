@@ -13,6 +13,6 @@ A Clojure library designed to evaluate poker hands.
 
 ## How it works
 
-This implementation is currently based on [Kevin Suffecool's poker hand evaluator](http://www.suffecool.net/poker/7462.html)  (aka Cactus Kev's Poker Hand Evaluator).
+This implementation is currently based on [Kevin Suffecool's poker hand evaluator](http://www.suffecool.net/poker/evaluator.html)  (aka Cactus Kev's Poker Hand Evaluator).
 
 A good reference to learn about this and other evaluators is [this blog post](http://www.codingthewheel.com/archives/poker-hand-evaluator-roundup/).

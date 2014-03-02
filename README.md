@@ -8,7 +8,14 @@ A Clojure library designed to evaluate poker hands.
 (use 'poker-hand-evaluator.core)
 
 (evaluate "T♣" "J♣" "Q♣" "K♣" "A♣")
-;= {:rank 1, :hand :StraightFlush}
+;= {:rank 1, :hand :StraightFlush, :cards ("T♣" "J♣" "Q♣" "K♣" "A♣")}
+```
+
+It also has basic support for 7-card evaluation:
+
+```clojure
+(evaluate "8♣" "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣")
+;= {:rank 1600 :hand :Straight :cards ("T♣" "J♣" "Q♦" "K♥" "A♣")}
 ```
 
 ## Running tests

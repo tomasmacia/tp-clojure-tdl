@@ -1,5 +1,6 @@
 (ns poker-hand-evaluator.core
-  (use poker-hand-evaluator.lookup-tables))
+  (:use [poker-hand-evaluator.lookup-tables])
+  (:use [clojure.contrib.combinatorics]))
 
 (def suit-details
   "Available suits and the respective bit pattern to be used in the card format"
@@ -133,10 +134,28 @@
   (ranks (+ hand-rank (first (filter #(>= % 0) (sort (map #(- % hand-rank) (keys ranks)))))))
   )
 
-(defn evaluate
-  "Evaluates a poker hand, returning a map including its name and rank"
+(defn- evaluate-hand
+  "Evaluates a 5-card poker hand, returning a map including its name and rank"
   [& hand]
   (let [hand-rank (calculate-hand-rank hand)
         rank-name (resolve-rank-name hand-rank)]
     {:rank hand-rank :hand rank-name})
+  )
+
+(defn- highest-rank
+  "Finds the highest rank for a list of evaluated hands"
+  [evaluated-hands]
+  (first (sort #(< (%1 :rank) (%2 :rank)) evaluated-hands))
+  )
+
+(defn- evaluate-all-combinations
+  "Evaluates all possible 5-card combinations for a hand"
+  [hand]
+  (map #(apply evaluate-hand %) (combinations hand 5))
+  )
+
+(defn evaluate
+  "Evaluates a poker hand. If it contains more than 5 cards, it returns the best hand possible"
+  [& hand]
+  (highest-rank (evaluate-all-combinations hand))
   )

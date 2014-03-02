@@ -55,3 +55,12 @@
     (is (= {:rank 7462 :hand :HighCard} (evaluate "2♣" "3♦" "4♦" "5♥" "7♣")))
     )
   )
+
+(deftest evaluation-more-than-5-cards
+  (testing "Finds highest straight out of 7 cards"
+    (is (= {:rank 1600 :hand :Straight} (evaluate "8♣" "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
+  (testing "Finds highest straight out of 7 cards in reverse order"
+    (is (= {:rank 1600 :hand :Straight} (evaluate "A♣" "K♦" "Q♣" "J♣" "T♦" "9♥" "8♣"))))
+  (testing "Finds highest straight out of 6 cards"
+    (is (= {:rank 1600 :hand :Straight} (evaluate "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
+  )

@@ -139,7 +139,7 @@
   [& hand]
   (let [hand-rank (calculate-hand-rank hand)
         rank-name (resolve-rank-name hand-rank)]
-    {:rank hand-rank :hand rank-name})
+    {:cards hand :rank hand-rank :hand rank-name})
   )
 
 (defn- highest-rank

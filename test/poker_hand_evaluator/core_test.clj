@@ -17,50 +17,63 @@
   (testing "J♣ is represented with correct bit pattern"
     (is (= "10000000001000100100011101" (base2-str (deck "J♣"))))))
 
+(defn hand
+  [rank hand-name result]
+  (and (= rank (result :rank)) (= hand-name (result :hand)))
+  )
+
+(defn hand-and-cards
+  [rank hand-name best-cards result]
+  (and (hand rank hand-name result) (= best-cards (result :cards)))
+  )
+
 (deftest evaluation
   (testing "Straight Flush"
-    (is (= {:rank 1 :hand :StraightFlush} (evaluate "T♣" "J♣" "Q♣" "K♣" "A♣")))
-    (is (= {:rank 10 :hand :StraightFlush} (evaluate "A♣" "2♣" "3♣" "4♣" "5♣")))
+    (is (hand  1 :StraightFlush (evaluate "T♣" "J♣" "Q♣" "K♣" "A♣")))
+    (is (hand 10 :StraightFlush (evaluate "A♣" "2♣" "3♣" "4♣" "5♣")))
     )
   (testing "Four of a kind"
-    (is (= {:rank 11 :hand :FourOfAKind} (evaluate "K♣" "A♣" "A♥" "A♦" "A♣")))
-    (is (= {:rank 166 :hand :FourOfAKind} (evaluate "3♣" "2♣" "2♥" "2♦" "2♣")))
+    (is (hand 11 :FourOfAKind (evaluate "K♣" "A♣" "A♥" "A♦" "A♣")))
+    (is (hand 166 :FourOfAKind (evaluate "3♣" "2♣" "2♥" "2♦" "2♣")))
     )
   (testing "Full House"
-    (is (= {:rank 167 :hand :FullHouse} (evaluate "K♣" "K♥" "A♥" "A♦" "A♣")))
-    (is (= {:rank 322 :hand :FullHouse} (evaluate "3♣" "3♥" "2♥" "2♦" "2♣")))
+    (is (hand 167 :FullHouse (evaluate "K♣" "K♥" "A♥" "A♦" "A♣")))
+    (is (hand 322 :FullHouse (evaluate "3♣" "3♥" "2♥" "2♦" "2♣")))
     )
   (testing "Flush"
-    (is (= {:rank 323 :hand :Flush} (evaluate "9♣" "J♣" "Q♣" "K♣" "A♣")))
-    (is (= {:rank 1599 :hand :Flush} (evaluate "2♣" "3♣" "4♣" "5♣" "7♣")))
+    (is (hand 323 :Flush (evaluate "9♣" "J♣" "Q♣" "K♣" "A♣")))
+    (is (hand 1599 :Flush (evaluate "2♣" "3♣" "4♣" "5♣" "7♣")))
     )
   (testing "Straight"
-    (is (= {:rank 1600 :hand :Straight} (evaluate "T♣" "J♣" "Q♦" "K♥" "A♣")))
-    (is (= {:rank 1609 :hand :Straight} (evaluate "A♣" "2♣" "3♦" "4♥" "5♣")))
+    (is (hand 1600 :Straight (evaluate "T♣" "J♣" "Q♦" "K♥" "A♣")))
+    (is (hand 1609 :Straight (evaluate "A♣" "2♣" "3♦" "4♥" "5♣")))
     )
   (testing "Three of a Kind"
-    (is (= {:rank 1610 :hand :ThreeOfAKind} (evaluate "Q♣" "K♥" "A♥" "A♦" "A♣")))
-    (is (= {:rank 2467 :hand :ThreeOfAKind} (evaluate "4♣" "3♥" "2♥" "2♦" "2♣")))
+    (is (hand 1610 :ThreeOfAKind (evaluate "Q♣" "K♥" "A♥" "A♦" "A♣")))
+    (is (hand 2467 :ThreeOfAKind (evaluate "4♣" "3♥" "2♥" "2♦" "2♣")))
     )
   (testing "Two Pairs"
-    (is (= {:rank 2468 :hand :TwoPairs} (evaluate "Q♣" "K♣" "K♦" "A♥" "A♣")))
-    (is (= {:rank 3325 :hand :TwoPairs} (evaluate "4♣" "3♣" "3♦" "2♥" "2♣")))
+    (is (hand 2468 :TwoPairs (evaluate "Q♣" "K♣" "K♦" "A♥" "A♣")))
+    (is (hand 3325 :TwoPairs (evaluate "4♣" "3♣" "3♦" "2♥" "2♣")))
     )
   (testing "One Pair"
-    (is (= {:rank 3326 :hand :OnePair} (evaluate "J♣" "Q♦" "K♦" "A♥" "A♣")))
-    (is (= {:rank 6185 :hand :OnePair} (evaluate "2♣" "2♦" "3♦" "4♥" "5♣")))
+    (is (hand 3326 :OnePair (evaluate "J♣" "Q♦" "K♦" "A♥" "A♣")))
+    (is (hand 6185 :OnePair (evaluate "2♣" "2♦" "3♦" "4♥" "5♣")))
     )
   (testing "Highest Card"
-    (is (= {:rank 6186 :hand :HighCard} (evaluate "9♣" "J♦" "Q♦" "K♥" "A♣")))
-    (is (= {:rank 7462 :hand :HighCard} (evaluate "2♣" "3♦" "4♦" "5♥" "7♣")))
+    (is (hand 6186 :HighCard (evaluate "9♣" "J♦" "Q♦" "K♥" "A♣")))
+    (is (hand 7462 :HighCard (evaluate "2♣" "3♦" "4♦" "5♥" "7♣")))
     )
   )
 
 (deftest evaluation-more-than-5-cards
   (testing "Finds highest straight out of 7 cards"
-    (is (= {:rank 1600 :hand :Straight} (evaluate "8♣" "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
+    (is (hand-and-cards 1600 :Straight '("T♣" "J♣" "Q♦" "K♥" "A♣")
+          (evaluate "8♣" "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
   (testing "Finds highest straight out of 7 cards in reverse order"
-    (is (= {:rank 1600 :hand :Straight} (evaluate "A♣" "K♦" "Q♣" "J♣" "T♦" "9♥" "8♣"))))
+    (is (hand-and-cards 1600 :Straight '("A♣" "K♦" "Q♣" "J♣" "T♦")
+          (evaluate "A♣" "K♦" "Q♣" "J♣" "T♦" "9♥" "8♣"))))
   (testing "Finds highest straight out of 6 cards"
-    (is (= {:rank 1600 :hand :Straight} (evaluate "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
+    (is (hand-and-cards 1600 :Straight '("T♣" "J♣" "Q♦" "K♥" "A♣")
+          (evaluate "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
   )

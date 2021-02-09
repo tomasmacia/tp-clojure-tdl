@@ -159,3 +159,18 @@
   [& hand]
   (highest-rank (evaluate-all-combinations hand))
   )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Hasta aca el proyecto existente, nuevas funcionalidades abajo
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defn evaluate-all
+  "Evalua una lista de manos de 5 o mas cartas"
+  [& hands]
+  )
+
+(defn best-hand
+  "Devuelve la mejor mano que contenga las cartas provistas"
+  [& cards]
+  )
+

@@ -1,6 +1,6 @@
 (ns poker-hand-evaluator.core
   (:use [poker-hand-evaluator.lookup-tables])
-  (:use [clojure.contrib.combinatorics]))
+  (:use [clojure.math.combinatorics]))
 
 (def suit-details
   "Available suits and the respective bit pattern to be used in the card format"

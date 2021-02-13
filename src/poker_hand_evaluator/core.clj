@@ -154,10 +154,36 @@
   (map #(apply evaluate-hand %) (combinations hand 5))
   )
 
+;; (def replacements
+;;   {#"S" "♠"
+;;    #"H" "♥"
+;;    #"D" "♦"
+;;    #"C" "♣"
+;;    })
+
+(defn- replace-symbols
+  "Replace different symbols" ;; TODO: revisar
+  [hand-rank]
+  (clojure.string/replace
+    (clojure.string/replace
+      (clojure.string/replace 
+        (clojure.string/replace hand-rank "S" "♠")
+      "D" "♦")
+    "C" "♣")
+  "H" "♥")
+  )
+
+(defn- normalize-symbols
+  "Transform symbols into common symbols"
+  [hand]
+  (map replace-symbols (map clojure.string/upper-case hand))
+  )
+
 (defn evaluate
   "Evaluates a poker hand. If it contains more than 5 cards, it returns the best hand possible"
   [& hand]
-  (highest-rank (evaluate-all-combinations hand))
+  ;; (println (normalize-symbols hand))
+  (highest-rank (evaluate-all-combinations (normalize-symbols hand)))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -173,4 +199,3 @@
   "Devuelve la mejor mano que contenga las cartas provistas"
   [& cards]
   )
-

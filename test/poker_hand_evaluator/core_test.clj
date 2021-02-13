@@ -77,3 +77,14 @@
     (is (hand-and-cards 1600 :Straight '("T♣" "J♣" "Q♦" "K♥" "A♣")
           (evaluate "9♦" "T♣" "J♣" "Q♦" "K♥" "A♣"))))
   )
+
+(deftest normalized-evaluations
+  (testing "Straight Flush"
+    (is (hand  1 :StraightFlush (evaluate "Tc" "Jc" "Qc" "Kc" "Ac")))
+    (is (hand 10 :StraightFlush (evaluate "Ac" "2c" "3c" "4c" "5c")))
+    )
+  (testing "Four of a kind"
+    (is (hand 11 :FourOfAKind (evaluate "kc" "ac" "ad" "ah" "as")))
+    (is (hand 166 :FourOfAKind (evaluate "3c" "2♣" "2♥" "2d" "2c")))
+    )
+  )

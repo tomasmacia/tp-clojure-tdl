@@ -194,9 +194,16 @@
   [& hands]
   )
 
+(defn sort-hand-draw
+  "Devuelve las manos en orden (mejor - peor)"
+  [cards]
+  ;; (first (sort-by :rank (map #(apply evaluate %) '(("Th" "Jh" "Qh" "Kh" "9h") ("Tc" "Jc" "Qc" "Kc" "Ac")))))
+  (sort-by :rank (map #(apply evaluate %) cards))
+  )
+
 (defn best-hand-draw
   "Devuelve la mejor mano que contenga las cartas provistas"
   [cards]
   ;; (first (sort-by :rank (map #(apply evaluate %) '(("Th" "Jh" "Qh" "Kh" "9h") ("Tc" "Jc" "Qc" "Kc" "Ac")))))
-  (first (sort-by :rank (map #(apply evaluate %) cards)))
+  (first (sort-hand-draw cards))
   )

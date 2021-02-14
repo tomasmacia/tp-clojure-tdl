@@ -88,3 +88,10 @@
     (is (hand 166 :FourOfAKind (evaluate "3c" "2♣" "2♥" "2d" "2c")))
     )
   )
+
+  (deftest pick-best-hand-draw
+    (testing "Pick best hand"
+      (is (hand  1 :StraightFlush (best-hand-draw '(("T♣" "J♣" "Q♣" "K♣" "A♣") ("3♣" "2♣" "2♥" "2♦" "2♣")))))
+      (is (hand 166 :FourOfAKind (best-hand-draw '(("3♣" "5♣" "A♣" "K♣" "9♣") ("3♣" "2♣" "2♥" "2♦" "2♣")))))
+      )
+    )

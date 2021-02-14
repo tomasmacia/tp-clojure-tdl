@@ -182,7 +182,6 @@
 (defn evaluate
   "Evaluates a poker hand. If it contains more than 5 cards, it returns the best hand possible"
   [& hand]
-  ;; (println (normalize-symbols hand))
   (highest-rank (evaluate-all-combinations (normalize-symbols hand)))
   )
 
@@ -195,7 +194,9 @@
   [& hands]
   )
 
-(defn best-hand
+(defn best-hand-draw
   "Devuelve la mejor mano que contenga las cartas provistas"
-  [& cards]
+  [cards]
+  ;; (first (sort-by :rank (map #(apply evaluate %) '(("Th" "Jh" "Qh" "Kh" "9h") ("Tc" "Jc" "Qc" "Kc" "Ac")))))
+  (first (sort-by :rank (map #(apply evaluate %) cards)))
   )

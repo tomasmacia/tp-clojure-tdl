@@ -207,3 +207,12 @@
   ;; (first (sort-by :rank (map #(apply evaluate %) '(("Th" "Jh" "Qh" "Kh" "9h") ("Tc" "Jc" "Qc" "Kc" "Ac")))))
   (first (sort-hand-draw cards))
   )
+
+(defn complete-best-hand 
+  "Devuelve la mejor mano posible con las cartas pasadas como parámetro"
+  [& uncompleted-hand]
+  (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
+        mazo (keys deck)]
+    (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
+  )
+)

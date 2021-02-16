@@ -222,10 +222,18 @@
   [n cards]
   (take n (shuffle cards)))
 
+(def mazo (keys deck))
+
 (defn random-game
   "Devuelve la mano posible con las cartas aleatorias pasadas"
   [cards]
   (apply evaluate (random-cards 5 cards)))
 
-;(random-game (keys deck))
-;=> {:cards ("T♣" "Q♠" "Q♥" "7♠" "4♣"), :rank 3917, :hand :OnePair}
+
+(defn texas-game
+  [cards]
+  (let [x (partition-all 5 (random-cards 7 cards))]
+    (println "Mesa: " (first x))
+    (println "Jugador:" (second x))
+    (apply evaluate (concat (first x) (second x))))
+  )

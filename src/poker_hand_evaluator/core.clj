@@ -216,3 +216,16 @@
     (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
   )
 )
+
+(defn random-cards
+  "Devuelve una secuencia de n cartas aleatorias sin repetir"
+  [n cards]
+  (take n (shuffle cards)))
+
+(defn random-game
+  "Devuelve la mano posible con las cartas aleatorias pasadas"
+  [cards]
+  (apply evaluate (random-cards 5 cards)))
+
+;(random-game (keys deck))
+;=> {:cards ("T♣" "Q♠" "Q♥" "7♠" "4♣"), :rank 3917, :hand :OnePair}

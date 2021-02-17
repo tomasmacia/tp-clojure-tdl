@@ -217,7 +217,7 @@
   )
 )
 
-(defn random-cards
+(defn- random-cards
   "Devuelve una secuencia de n cartas aleatorias sin repetir"
   [n cards]
   (take n (shuffle cards)))
@@ -225,15 +225,18 @@
 (def mazo (keys deck))
 
 (defn random-game
-  "Devuelve la mano posible con las cartas aleatorias pasadas"
-  [cards]
-  (apply evaluate (random-cards 5 cards)))
-
+  "Devuelve la mano posible con las n cartas aleatorias pasadas"
+  [n cards]
+  (apply evaluate (random-cards n cards)))
 
 (defn texas-game
+  "Devuelve la mejor mano posible con las cartas aleatorias pasadas"
   [cards]
-  (let [x (partition-all 5 (random-cards 7 cards))]
-    (println "Mesa: " (first x))
-    (println "Jugador:" (second x))
-    (apply evaluate (concat (first x) (second x))))
+  (let [x (random-cards 7 cards)
+        y (partition-all 5 x)
+        mesa (first y)
+        jugador (second y)]
+    (println "Mesa:" mesa)
+    (println "Jugador:" jugador)
+    (apply evaluate x))
   )

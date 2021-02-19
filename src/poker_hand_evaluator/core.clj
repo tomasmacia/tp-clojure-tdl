@@ -218,6 +218,18 @@
   @result)
 )
 
+(defmulti complete-best-hand-multi (fn [& uncompleted-hand] [(let [result (count uncompleted-hand)] result)]))
+(defmethod complete-best-hand-multi [1] [& uncompleted-hand] "funcionalidad proximamente disponible")
+(defmethod complete-best-hand-multi [2] [& uncompleted-hand] "funcionalidad proximamente disponible")
+(defmethod complete-best-hand-multi [3] [& uncompleted-hand] "funcionalidad proximamente disponible")
+(defmethod complete-best-hand-multi :default [& uncompleted-hand] 
+  (let [result (future (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
+        mazo (keys deck)]
+    (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
+  ))]
+  @result)
+)
+
 (defn- random-cards
   "Devuelve una secuencia de n cartas aleatorias sin repetir"
   [n cards]

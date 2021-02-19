@@ -211,10 +211,11 @@
 (defn complete-best-hand 
   "Devuelve la mejor mano posible con las cartas pasadas como parámetro"
   [& uncompleted-hand]
-  (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
+  (let [result (future (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
         mazo (keys deck)]
     (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
-  )
+  ))]
+  @result)
 )
 
 (defn- random-cards

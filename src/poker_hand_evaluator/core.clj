@@ -185,6 +185,29 @@
   (highest-rank (evaluate-all-combinations (normalize-symbols hand)))
   )
 
+
+;Con threading-macros
+(defn- replace-symbols*
+  [hand-rank]
+  (-> hand-rank
+      (clojure.string/replace "S" "♠")
+      (clojure.string/replace "D" "♦")
+      (clojure.string/replace "C" "♣")
+      (clojure.string/replace "H" "♥"))
+  )
+
+(defn- normalize-symbols*
+  [hand]
+  (map replace-symbols* (map clojure.string/upper-case hand))
+  )
+
+(defn evaluate*
+  [& hand]
+  (->> hand
+       normalize-symbols
+       evaluate-all-combinations
+       highest-rank)
+  )
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Hasta aca el proyecto existente, nuevas funcionalidades abajo
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

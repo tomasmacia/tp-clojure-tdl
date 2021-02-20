@@ -213,8 +213,10 @@
   [& uncompleted-hand]
   (let [result (future (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
         mazo (keys deck)]
-    (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
+        (Thread/sleep 5000)
+        (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
   ))]
+  (if (not (realized? result)) (println "Procesando resultado...") (println "Ya terminó."))
   @result)
 )
 
@@ -223,11 +225,10 @@
 (defmethod complete-best-hand-multi [2] [& uncompleted-hand] "funcionalidad proximamente disponible")
 (defmethod complete-best-hand-multi [3] [& uncompleted-hand] "funcionalidad proximamente disponible")
 (defmethod complete-best-hand-multi [4] [& uncompleted-hand] 
-  (let [result (future (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
+  (let [norm-uncompleted-hand (normalize-symbols uncompleted-hand)
         mazo (keys deck)]
     (best-hand-draw (filter #(= (count (set %)) 5) (map #(conj norm-uncompleted-hand %) mazo)))
-  ))]
-  @result)
+  )
 )
 (defmethod complete-best-hand-multi :default [& uncompleted-hand] "Para completar la mano deben pasarse 4 cartas")
 

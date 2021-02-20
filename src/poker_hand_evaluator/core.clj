@@ -204,7 +204,7 @@
 (defn evaluate*
   [& hand]
   (->> hand
-       normalize-symbols
+       normalize-symbols*
        evaluate-all-combinations
        highest-rank)
   )
@@ -255,7 +255,7 @@
 )
 (defmethod complete-best-hand-multi :default [& uncompleted-hand] "Para completar la mano deben pasarse 4 cartas")
 
-(defn- random-cards
+(defn random-cards
   "Devuelve una secuencia de n cartas aleatorias sin repetir"
   [n cards]
   (take n (shuffle cards)))
@@ -277,4 +277,15 @@
     (println "Mesa:" mesa)
     (println "Jugador:" jugador)
     (apply evaluate x))
+  )
+
+(defmacro texas-game*
+  [cards]
+  `(let [x# (random-cards 7 ~cards)
+         y# (partition-all 5 x#)
+         mesa# (first y#)
+         jugador# (second y#)]
+     (println "Mesa:" mesa#)
+     (println "Jugador:" jugador#)
+     (apply evaluate x#))
   )

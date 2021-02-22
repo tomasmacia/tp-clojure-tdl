@@ -328,5 +328,5 @@
             (filter #(not (contains? (set c) %)) (union hand (set (take (count c) @mazo-ref)))))))
     )
   (println "Your cards:" (deref hand-ref))
-  ;;(println (evaluate @hand-ref))
+  (println (apply evaluate (deref hand-ref)))
   )

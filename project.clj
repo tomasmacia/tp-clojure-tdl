@@ -4,4 +4,5 @@
   :dependencies [[org.clojure/clojure "1.10.2"]
                  [org.clojure/math.combinatorics "0.1.6"]]
   :plugins [[quickie "0.4.2"]]
+  :main poker-hand-evaluator.core/main
   )

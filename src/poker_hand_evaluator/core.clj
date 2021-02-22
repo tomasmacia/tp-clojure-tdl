@@ -1,6 +1,7 @@
 (ns poker-hand-evaluator.core
   (:use [poker-hand-evaluator.lookup-tables])
-  (:use [clojure.math.combinatorics]))
+  (:use [clojure.math.combinatorics])
+  (:use [clojure.set]))
 
 (def suit-details
   "Available suits and the respective bit pattern to be used in the card format"
@@ -296,4 +297,36 @@
      (println "Mesa:" mesa#)
      (println "Jugador:" jugador#)
      (apply evaluate x#))
+  )
+
+(def mazo-ref (ref (shuffle mazo)))
+
+(defn main
+  "Simula un juego"
+  []
+  ;;(println "deck" (deref mazo-ref))
+  (def hand-ref (ref #{}))
+  (dosync
+      (alter hand-ref
+        (fn [hand] 
+          (set (take 5 @mazo-ref))))
+      (alter mazo-ref
+        (fn [mazo] 
+          (let [cards @hand-ref]
+            (filter #(not (contains? cards %)) mazo)))
+          ))
+  ;;(println "deck" (deref mazo-ref))
+  (println "Your cards:" (deref hand-ref))
+  (println "Discarding:")
+
+  (let [c (clojure.string/split (read-line) #" ")]
+      (println "Changing:" c)
+      (dosync
+        (alter hand-ref
+          (fn [hand]
+            ;;(println (type c))
+            (filter #(not (contains? (set c) %)) (union hand (set (take (count c) @mazo-ref)))))))
+    )
+  (println "Your cards:" (deref hand-ref))
+  ;;(println (evaluate @hand-ref))
   )

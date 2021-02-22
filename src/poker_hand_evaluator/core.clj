@@ -304,7 +304,6 @@
 (defn main
   "Simula un juego"
   []
-  ;;(println "deck" (deref mazo-ref))
   (def hand-ref (ref #{}))
   (dosync
       (alter hand-ref
@@ -315,18 +314,21 @@
           (let [cards @hand-ref]
             (filter #(not (contains? cards %)) mazo)))
           ))
-  ;;(println "deck" (deref mazo-ref))
   (println "Your cards:" (deref hand-ref))
-  (println "Discarding:")
+  (println (apply evaluate (deref hand-ref)))
+  (println "\nDraw phase. Enter your cards to discard (empty if none):")
 
-  (let [c (clojure.string/split (read-line) #" ")]
-      (println "Changing:" c)
+  (let [c (filter #(not (empty? %)) (clojure.string/split (read-line) #" "))]
+      (println "\nChanging:" c)
       (dosync
         (alter hand-ref
           (fn [hand]
-            ;;(println (type c))
-            (filter #(not (contains? (set c) %)) (union hand (set (take (count c) @mazo-ref)))))))
+            (filter #(not (contains? (set c) %)) (union hand (set (take (count c) @mazo-ref))))))
+        (alter mazo-ref
+          (fn [m] 
+            (shuffle mazo)
+            )))
     )
-  (println "Your cards:" (deref hand-ref))
+  (println "\n\nShowdown:" (deref hand-ref))
   (println (apply evaluate (deref hand-ref)))
   )

@@ -187,6 +187,7 @@
 
 
 ;Con threading-macros
+
 (defn- replace-symbols*
   [hand-rank]
   (-> hand-rank
@@ -196,18 +197,25 @@
       (clojure.string/replace "H" "♥"))
   )
 
+(defn- highest-rank*
+  [evaluated-hands]
+  (->> evaluated-hands
+       (sort #(< (%1 :rank) (%2 :rank)))
+       first)
+  )
+
+
 (defn- normalize-symbols*
   [hand]
   (map replace-symbols* (map clojure.string/upper-case hand))
   )
 
 (defn evaluate*
+  "Evaluates a poker hand. If it contains more than 5 cards, it returns the best hand possible"
   [& hand]
-  (->> hand
-       normalize-symbols*
-       evaluate-all-combinations
-       highest-rank)
+  (highest-rank* (evaluate-all-combinations (normalize-symbols* hand)))
   )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Hasta aca el proyecto existente, nuevas funcionalidades abajo
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
